@@ -1,0 +1,46 @@
+default:
+  type: SANDSTONE
+  name: "&7沙石"
+  lore:
+    - "&e一块来自沙漠的石头"
+    - "&e能够提取单晶硅"
+  permission: ""
+  cost: 0
+  point-cost: 0
+tnt:
+  type: TNT
+  name: "&7TNT"
+  lore:
+    - "&e危险物品"
+    - "&e冷知识:"
+    - "&e许多服务器都怕它"
+  permission: "clutch.gadget.block.tnt"
+  cost: 100
+  point-cost: 0
+glass:
+  type: GLASS
+  name: "&7玻璃"
+  lore:
+    - "&e易碎品"
+    - "&e你还容易看不到它"
+  permission: "clutch.gadget.block.glass"
+  cost: 100
+  point-cost: 0
+diamond_block:
+  type: DIAMOND_BLOCK
+  name: "&7钻石块"
+  lore:
+    - "&e土豪的象征"
+    - "&e淡蓝色的"
+  permission: "clutch.gadget.block.diamond_block"
+  cost: 0
+  point-cost: 10
+obsidian:
+  type: OBSIDIAN
+  name: "&7黑曜石"
+  lore:
+    - "&e好硬"
+    - "&e还炸不坏"
+  permission: "clutch.gadget.block.obsidian"
+  cost: 0
+  point-cost: 10

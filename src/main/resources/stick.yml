@@ -1,0 +1,45 @@
+default:
+  type: STICK
+  name: "&7仙女棒"
+  lore:
+    - "&e一根普通的仙女棒"
+    - "&e但打人也超疼的"
+  permission: ""
+  cost: 0
+  point-cost: 0
+feather:
+  type: FEATHER
+  name: "&7羽毛"
+  lore:
+    - "&e来自Celeste的金羽毛"
+    - "&e但是被洒满了脱金水"
+  permission: clutch.gadget.knockback.feather
+  cost: 100
+  point-cost: 0
+brick:
+  type: CLAY_BRICK
+  name: "&7板砖"
+  lore:
+    - "&e孔子曰: 打人用砖呼"
+    - "&e大力呼, 呼不死再呼"
+  permission: clutch.gadget.knockback.brick
+  cost: 200
+  point-cost: 0
+fish:
+  type: RAW_FISH
+  name: "&7一条咸鱼"
+  lore:
+    - "&e曾经的一条活泼的小鱼"
+    - "&e却被岁月磨去了生命"
+  permission: clutch.gadget.knockback.fish
+  cost: 0
+  point-cost: 10
+blaze-rod:
+  type: BLAZE_ROD
+  name: "&7金色传说棒"
+  lore:
+    - "&e从烈焰人身上拆下来的棒子"
+    - "&e极其烫手"
+  permission: clutch.gadget.knockback.blaze_rod
+  cost: 0
+  point-cost: 10

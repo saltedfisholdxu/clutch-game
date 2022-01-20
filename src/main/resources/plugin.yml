@@ -1,0 +1,45 @@
+name: ClutchGames
+version: '${project.version}'
+main: moe.orangemc.clutchgames.ClutchGames
+depend: [ Citizens, ProtocolLib, PlaceholderAPI, Vault, PlayerPoints ]
+authors: [ Lucky_fish0w0 ]
+description: A clutch game
+
+commands:
+  clutch:
+    aliases: [cc]
+
+permissions:
+  clutch.command.*:
+    default: op
+    children:
+      - clutch.command.map
+      - clutch.command.setlobby
+      - clutch.command.play
+      - clutch.command.lobby
+      - clutch.command.difficulty
+      - clutch.command.gadget
+      - clutch.command.customknockback
+      - clutch.command.timer
+      - clutch.command.debug-npc
+      - clutch.command.debug-player
+  clutch.command.map:
+    default: op
+  clutch.command.setlobby:
+    default: op
+  clutch.command.debug-npc:
+    default: op
+  clutch.command.debug-player:
+    default: op
+  clutch.command.play:
+    default: true
+  clutch.command.lobby:
+    default: true
+  clutch.command.difficulty:
+    default: true
+  clutch.command.gadget:
+    default: true
+  clutch.command.customknockback:
+    default: true
+  clutch.command.timer:
+    default: true
