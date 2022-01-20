@@ -79,6 +79,10 @@
             <name>Dakani Nexus Repo</name>
             <url>https://repo.dakanilabs.com/repository/public</url>
         </repository>
+        <repository>
+            <id>luckyfish-repo</id>
+            <url>https://raw.githubusercontent.com/Lucky-fish/mvn-repo/master/</url>
+        </repository>
     </repositories>
 
     <dependencies>
