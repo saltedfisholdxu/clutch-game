@@ -64,7 +64,7 @@ public class KnockbackGame extends Game {
                 if (player.getNoDamageTicks() <= 0) {
                     hits--;
                     this.player.damage(0);
-                    Bukkit.getScheduler().runTaskLater(ClutchGames.getInstance(), () -> this.player.setVelocity(ClutchGames.getKnockbackConfig().getKnockback(player, ClutchGames.getMySQLDataSource().getDifficulty(this.player))), 1);
+                    Bukkit.getScheduler().runTaskLater(ClutchGames.getInstance(), () -> this.player.setVelocity(ClutchGames.getKnockbackConfig().getKnockback(player, ClutchGames.getMySQLDataSource().getDifficulty(this.player, GameType.KNOCKBACK), GameType.KNOCKBACK)), 1);
                 }
             } else {
                 ticks--;
@@ -86,7 +86,7 @@ public class KnockbackGame extends Game {
 
     @Override
     public void tickScoreboard(ScoreboardList scoreboardList) {
-        updateScoreboard(scoreboardList, player.getName(), furthestDistance, currentDistance, world.getSpawnLocation(), player.getLocation(), ClutchGames.getMySQLDataSource().getDifficulty(player), ClutchGames.getMySQLDataSource().getKnockback(player));
+        updateScoreboard(scoreboardList, player.getName(), furthestDistance, currentDistance, world.getSpawnLocation(), player.getLocation(), ClutchGames.getMySQLDataSource().getDifficulty(player, GameType.KNOCKBACK), ClutchGames.getMySQLDataSource().getKnockback(player, GameType.KNOCKBACK));
     }
 
     static void updateScoreboard(ScoreboardList scoreboardList, String name, double furthestDistance, double currentDistance, Location spawnLocation, Location location, KnockbackDifficulty difficulty, Vector2d knockback) {

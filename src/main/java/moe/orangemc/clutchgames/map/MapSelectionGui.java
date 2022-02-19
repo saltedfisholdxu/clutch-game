@@ -6,7 +6,6 @@ import moe.orangemc.clutchgames.util.ItemStackFactory;
 import moe.orangemc.plugincommons.PluginCommons;
 import moe.orangemc.plugincommons.inventory.PluginInventory;
 import moe.orangemc.plugincommons.inventory.PluginInventoryManager;
-import moe.orangemc.plugincommons.inventory.control.handler.InventoryHandler;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -34,9 +33,6 @@ public class MapSelectionGui {
                         break;
                     case KNOCKBACK:
                         gm.createKnockbackGame(whoClicked, map);
-                        break;
-                    case BRIDGE:
-                        gm.createBridgeGame(whoClicked, map);
                         break;
                 }
                 whoClicked.closeInventory();

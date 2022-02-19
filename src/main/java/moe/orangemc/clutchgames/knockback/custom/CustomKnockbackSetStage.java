@@ -21,7 +21,7 @@ public enum CustomKnockbackSetStage {
 
                 @Override
                 public void preExecute(CustomKnockbackSetSession session) {
-                    player.sendMessage(ClutchGames.PREFIX + ChatColor.YELLOW + "请输入垂直方向的击退大小 (当前: " + DATA_SOURCE.getKnockback(player).getY() + ")");
+                    player.sendMessage(ClutchGames.PREFIX + ChatColor.YELLOW + "请输入垂直方向的击退大小 (当前: " + DATA_SOURCE.getKnockback(player, session.getGameType()).getY() + ")");
                     CustomKnockbackSetSessionListener.registerHandler(this);
                 }
 
@@ -51,7 +51,7 @@ public enum CustomKnockbackSetStage {
 
                 @Override
                 public void preExecute(CustomKnockbackSetSession session) {
-                    player.sendMessage(ClutchGames.PREFIX + ChatColor.YELLOW + "请输入水平方向的击退大小 (当前: " + DATA_SOURCE.getKnockback(player).getX() + ")");;
+                    player.sendMessage(ClutchGames.PREFIX + ChatColor.YELLOW + "请输入水平方向的击退大小 (当前: " + DATA_SOURCE.getKnockback(player, session.getGameType()).getX() + ")");;
                     CustomKnockbackSetSessionListener.registerHandler(this);
                 }
 
@@ -87,7 +87,7 @@ public enum CustomKnockbackSetStage {
                 @Override
                 public void execute(AsyncPlayerChatEvent event, CustomKnockbackSetSession session) {
                     Vector2d vec = session.build();
-                    DATA_SOURCE.setKnockback(player, vec);
+                    DATA_SOURCE.setKnockback(player, vec, session.getGameType());
                     player.sendMessage(ClutchGames.PREFIX + ChatColor.GREEN + "你的击退被设为 水平: " + vec.getX() + ", 垂直: " + vec.getY());
                     ClutchGames.getCustomKnockbackSessionManager().removeSession(player);
                 }

@@ -1,7 +1,6 @@
 package moe.orangemc.clutchgames.command;
 
 import moe.orangemc.clutchgames.ClutchGames;
-import moe.orangemc.clutchgames.game.GameManager;
 import moe.orangemc.clutchgames.map.MapManager;
 import moe.orangemc.plugincommons.command.SubCommandBase;
 
@@ -24,7 +23,7 @@ public class PlayCommand implements SubCommandBase {
 
     @Override
     public String getUsage() {
-        return "<游戏类型 bridge(搭路)|NPCClutch(NPC自救)|clutch(自救)>";
+        return "<游戏类型 NPCClutch(NPC自救)|clutch(自救)>";
     }
 
     @Override
@@ -46,9 +45,6 @@ public class PlayCommand implements SubCommandBase {
 
         MapManager mapManager = ClutchGames.getMapManager();
         switch (args[0]) {
-            case "bridge":
-                mapManager.openBridgeGameMapSelector(p);
-                break;
             case "NPCClutch":
                 mapManager.openNpcKnockbackGameMapSelector(p);
                 break;
