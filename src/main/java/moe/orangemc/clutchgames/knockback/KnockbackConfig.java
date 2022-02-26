@@ -1,10 +1,9 @@
 package moe.orangemc.clutchgames.knockback;
 
 import moe.orangemc.clutchgames.ClutchGames;
-import moe.orangemc.clutchgames.util.Logger;
+import moe.orangemc.clutchgames.game.GameType;
 import moe.orangemc.clutchgames.util.Vector2d;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -32,18 +31,18 @@ public class KnockbackConfig {
         }
     }
 
-    public Vector getKnockback(Player player, KnockbackDifficulty difficulty) {
-        return getKnockbackByRotation(player, difficulty, rotation);
+    public Vector getKnockback(Player player, KnockbackDifficulty difficulty, GameType gameType) {
+        return getKnockbackByRotation(player, difficulty, rotation, gameType);
     }
 
     public double getRotation() {
         return rotation;
     }
 
-    public Vector getKnockbackByRotation(Player player, KnockbackDifficulty difficulty, double rotation) {
+    public Vector getKnockbackByRotation(Player player, KnockbackDifficulty difficulty, double rotation, GameType gameType) {
         Vector2d vec;
         if (difficulty == KnockbackDifficulty.CUSTOM) {
-            vec = ClutchGames.getMySQLDataSource().getKnockback(player);
+            vec = ClutchGames.getMySQLDataSource().getKnockback(player, gameType);
         } else {
             vec = knockbackDifficultyMap.get(difficulty);
         }

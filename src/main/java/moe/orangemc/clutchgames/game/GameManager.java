@@ -25,11 +25,6 @@ public class GameManager {
         playerGame.put(player, new NpcKnockbackGame(player, gameMap));
     }
 
-    public void createBridgeGame(Player player, GameMap gameMap) {
-        scoreboardManager.registerGameScoreboard(player);
-        playerGame.put(player, new BridgeGame(player, gameMap));
-    }
-
     public void destroyGame(Player player) {
         if (!playerGame.containsKey(player)) {
             return;

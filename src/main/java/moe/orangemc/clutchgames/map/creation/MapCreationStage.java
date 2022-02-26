@@ -32,7 +32,7 @@ public enum MapCreationStage {
                 @Override
                 public void preExecute(MapCreationSession session) {
                     player.sendMessage(ClutchGames.PREFIX + ChatColor.YELLOW + "请输入地图类型");
-                    player.sendMessage(ClutchGames.PREFIX + ChatColor.YELLOW + "可用的地图类型有: " + ChatColor.GREEN + "clutch(方块自救)" + ChatColor.YELLOW + ", " + ChatColor.GREEN + "NPCClutch(NPC自救)" + ChatColor.YELLOW + ", " + ChatColor.GREEN + "bridge(搭路)");
+                    player.sendMessage(ClutchGames.PREFIX + ChatColor.YELLOW + "可用的地图类型有: " + ChatColor.GREEN + "clutch(方块自救)" + ChatColor.YELLOW + ", " + ChatColor.GREEN + "NPCClutch(NPC自救)" + ChatColor.YELLOW);
                     MapCreationListener.registerHandler(this);
                 }
 
@@ -47,10 +47,6 @@ public enum MapCreationStage {
                             return;
                         case "NPCClutch":
                             session.setType(MapType.NPC_KNOCKBACK);
-                            session.processNext(event.getPlayer());
-                            return;
-                        case "bridge":
-                            session.setType(MapType.BRIDGE);
                             session.processNext(event.getPlayer());
                             return;
                         default:
@@ -195,9 +191,6 @@ public enum MapCreationStage {
         public MapCreationStage getNextStage(MapCreationSession session) {
             if (session.getType() == MapType.NPC_KNOCKBACK) {
                 return NPC_SPAWN;
-            }
-            if (session.getType() == MapType.BRIDGE) {
-                return BRIDGE_DESTINATION;
             }
             return FINISH;
         }

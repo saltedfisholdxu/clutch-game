@@ -27,9 +27,6 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import java.lang.reflect.InvocationTargetException;
 
 public class NpcKnockbackGame extends Game {
-    private int defaultNpcNoDamageTick = 11;
-    private int defaultPlayerNoDamageTick = 11;
-
     private final NPC knockbackNpc;
     private boolean shouldAttack = false;
     private double furthestDistance = 0;
@@ -93,7 +90,7 @@ public class NpcKnockbackGame extends Game {
 
                     double knockbackAngle = npcLocation.getYaw();
 
-                    player.setVelocity(ClutchGames.getKnockbackConfig().getKnockbackByRotation(player, ClutchGames.getMySQLDataSource().getDifficulty(player), knockbackAngle));
+                    player.setVelocity(ClutchGames.getKnockbackConfig().getKnockbackByRotation(player, ClutchGames.getMySQLDataSource().getDifficulty(player, GameType.NPC_KNOCKBACK), knockbackAngle, GameType.NPC_KNOCKBACK));
                 }
             }
 
@@ -121,6 +118,7 @@ public class NpcKnockbackGame extends Game {
         }
 
         GadgetManager gm = ClutchGames.getGadgetManager();
+        int defaultPlayerNoDamageTick = 11;
         if (player.getMaximumNoDamageTicks() != defaultPlayerNoDamageTick) {
             player.setMaximumNoDamageTicks(defaultPlayerNoDamageTick);
         }
@@ -141,7 +139,7 @@ public class NpcKnockbackGame extends Game {
 
     @Override
     public void tickScoreboard(ScoreboardList scoreboardList) {
-        KnockbackGame.updateScoreboard(scoreboardList, player.getName(), furthestDistance, currentDistance, world.getSpawnLocation(), player.getLocation(), ClutchGames.getMySQLDataSource().getDifficulty(player), ClutchGames.getMySQLDataSource().getKnockback(player));
+        KnockbackGame.updateScoreboard(scoreboardList, player.getName(), furthestDistance, currentDistance, world.getSpawnLocation(), player.getLocation(), ClutchGames.getMySQLDataSource().getDifficulty(player, GameType.NPC_KNOCKBACK), ClutchGames.getMySQLDataSource().getKnockback(player, GameType.NPC_KNOCKBACK));
     }
 
     public NPC getKnockbackNpc() {
@@ -152,7 +150,7 @@ public class NpcKnockbackGame extends Game {
         if (isResting()) {
             toggleResting();
         }
-        npcNoDamageTick = defaultNpcNoDamageTick;
+        npcNoDamageTick = 11;
         this.shouldAttack = true;
     }
 
@@ -166,13 +164,5 @@ public class NpcKnockbackGame extends Game {
         knockbackNpc.destroy();
         ClutchGames.getMySQLDataSource().setClutchNpcRecord(player, furthestDistance);
         player.setMaximumNoDamageTicks(noDamageTick);
-    }
-
-    public void setDefaultNpcNoDamageTick(int defaultNpcNoDamageTick) {
-        this.defaultNpcNoDamageTick = defaultNpcNoDamageTick;
-    }
-
-    public void setDefaultPlayerNoDamageTick(int defaultPlayerNoDamageTick) {
-        this.defaultPlayerNoDamageTick = defaultPlayerNoDamageTick;
     }
 }

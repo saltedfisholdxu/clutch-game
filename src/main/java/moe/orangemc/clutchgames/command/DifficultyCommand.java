@@ -1,6 +1,7 @@
 package moe.orangemc.clutchgames.command;
 
 import moe.orangemc.clutchgames.ClutchGames;
+import moe.orangemc.clutchgames.game.GameType;
 import moe.orangemc.clutchgames.knockback.KnockbackDifficulty;
 import moe.orangemc.plugincommons.command.SubCommandBase;
 
@@ -27,7 +28,7 @@ public class DifficultyCommand implements SubCommandBase {
 
     @Override
     public String getUsage() {
-        return "<击退难度 easy(简单)|normal(普通)|hard(困难)>";
+        return "<击退难度 easy(简单)|normal(普通)|hard(困难)> <游戏类型 npc(NPC自救)|kb(方块自救)>";
     }
 
     @Override
@@ -41,7 +42,7 @@ public class DifficultyCommand implements SubCommandBase {
             sender.sendMessage(ClutchGames.PREFIX + ChatColor.RED + "控制台不能玩游戏! ");
             return true;
         }
-        if (args.length != 1) {
+        if (args.length != 2) {
             return false;
         }
         KnockbackDifficulty difficulty;
@@ -58,7 +59,18 @@ public class DifficultyCommand implements SubCommandBase {
             default:
                 return false;
         }
-        ClutchGames.getMySQLDataSource().putDifficulty((Player) sender, difficulty);
+        GameType gameType;
+        switch (args[1]) {
+            case "npc":
+                gameType = GameType.NPC_KNOCKBACK;
+                break;
+            case "kb":
+                gameType = GameType.KNOCKBACK;
+                break;
+            default:
+                return false;
+        }
+        ClutchGames.getMySQLDataSource().putDifficulty((Player) sender, difficulty, gameType);
         sender.sendMessage(ClutchGames.PREFIX + ChatColor.GREEN + "你的击退难度已设置为" + difficulty.getName());
         return true;
     }

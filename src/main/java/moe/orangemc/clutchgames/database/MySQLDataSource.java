@@ -1,5 +1,6 @@
 package moe.orangemc.clutchgames.database;
 
+import moe.orangemc.clutchgames.game.GameType;
 import moe.orangemc.clutchgames.knockback.KnockbackDifficulty;
 import moe.orangemc.clutchgames.util.Logger;
 import moe.orangemc.clutchgames.util.Vector2d;
@@ -52,6 +53,12 @@ public class MySQLDataSource {
                     "`difficulty` int not null," +
                     "primary key (`id`)" +
                     ");").executeUpdate();
+            c.prepareStatement("create table if not exists `knockback_npc` (" +
+                    "`id` int auto_increment," +
+                    "`uuid` varchar(64) not null," +
+                    "`difficulty` int not null," +
+                    "primary key (`id`)" +
+                    ");").executeUpdate();
             c.prepareStatement("create table if not exists `bridge_record` (" +
                     "`id` int auto_increment," +
                     "`uuid` varchar(64) not null," +
@@ -59,6 +66,13 @@ public class MySQLDataSource {
                     "primary key (`id`)" +
                     ");").executeUpdate();
             c.prepareStatement("create table if not exists `custom_knockback` (" +
+                    "`id` int auto_increment," +
+                    "`uuid` varchar(64) not null," +
+                    "`vertical` double not null," +
+                    "`horizontal` double not null," +
+                    "primary key (`id`)" +
+                    ");").executeUpdate();
+            c.prepareStatement("create table if not exists `custom_knockback_npc` (" +
                     "`id` int auto_increment," +
                     "`uuid` varchar(64) not null," +
                     "`vertical` double not null," +
@@ -96,9 +110,14 @@ public class MySQLDataSource {
         }
     }
 
-    private boolean havePutDifficulty(OfflinePlayer player) {
+    private boolean havePutDifficulty(OfflinePlayer player, GameType gameType) {
+        String tableName = "knockback";
+        if (gameType == GameType.NPC_KNOCKBACK) {
+            tableName += "_npc";
+        }
+
         try (Connection c = getConnection()) {
-            PreparedStatement ps = c.prepareStatement("select * from `knockback` where uuid=?;");
+            PreparedStatement ps = c.prepareStatement("select * from `" + tableName + "` where uuid=?;");
             ps.setString(1, player.getUniqueId().toString());
             ResultSet rs = ps.executeQuery();
             return rs.first();
@@ -118,17 +137,21 @@ public class MySQLDataSource {
         }
     }
 
-    public void putDifficulty(OfflinePlayer player, KnockbackDifficulty difficulty) {
-        boolean alreadyHave = havePutDifficulty(player);
+    public void putDifficulty(OfflinePlayer player, KnockbackDifficulty difficulty, GameType gameType) {
+        boolean alreadyHave = havePutDifficulty(player, gameType);
         this.cachedResultMap.remove(player);
+        String tableName = "knockback";
+        if (gameType == GameType.NPC_KNOCKBACK) {
+            tableName += "_npc";
+        }
         try (Connection c = getConnection()) {
             PreparedStatement putStatement;
             if (alreadyHave) {
-                putStatement = c.prepareStatement("update `knockback` set difficulty=? where uuid=?;");
+                putStatement = c.prepareStatement("update `" + tableName + "` set difficulty=? where uuid=?;");
                 putStatement.setString(2, player.getUniqueId().toString());
                 putStatement.setInt(1, difficulty.ordinal());
             } else {
-                putStatement = c.prepareStatement("insert into `knockback` (uuid,difficulty) values (?,?);");
+                putStatement = c.prepareStatement("insert into `" + tableName + "` (uuid,difficulty) values (?,?);");
                 putStatement.setString(1, player.getUniqueId().toString());
                 putStatement.setInt(2, difficulty.ordinal());
             }
@@ -138,16 +161,24 @@ public class MySQLDataSource {
         }
     }
 
-    public KnockbackDifficulty getDifficulty(OfflinePlayer player) {
-        if (cachedResultMap.containsKey(player) && cachedResultMap.get(player).getDifficulty() != null) {
-            return cachedResultMap.get(player).getDifficulty();
+    public KnockbackDifficulty getDifficulty(OfflinePlayer player, GameType gameType) {
+        if (cachedResultMap.containsKey(player)) {
+            if (gameType == GameType.NPC_KNOCKBACK && cachedResultMap.get(player).getNpcDifficulty() != null) {
+                return cachedResultMap.get(player).getNpcDifficulty();
+            } else if (cachedResultMap.get(player).getDifficulty() != null) {
+                return cachedResultMap.get(player).getDifficulty();
+            }
         }
-        if (!havePutDifficulty(player)) {
-            putDifficulty(player, KnockbackDifficulty.EASY);
+        if (!havePutDifficulty(player, gameType)) {
+            putDifficulty(player, KnockbackDifficulty.EASY, gameType);
             return KnockbackDifficulty.EASY;
         }
+        String tableName = "knockback";
+        if (gameType == GameType.NPC_KNOCKBACK) {
+            tableName += "_npc";
+        }
         try (Connection c = getConnection()) {
-            PreparedStatement fetchStatement = c.prepareStatement("select * from `knockback` where uuid=?;");
+            PreparedStatement fetchStatement = c.prepareStatement("select * from `" + tableName + "` where uuid=?;");
             fetchStatement.setString(1, player.getUniqueId().toString());
             ResultSet rs = fetchStatement.executeQuery();
             rs.first();
@@ -208,9 +239,13 @@ public class MySQLDataSource {
         }
     }
 
-    private boolean haveKnockback(OfflinePlayer player) {
+    private boolean haveKnockback(OfflinePlayer player, GameType gameType) {
+        String tableName = "custom_knockback";
+        if (gameType == GameType.NPC_KNOCKBACK) {
+            tableName += "_npc";
+        }
         try (Connection c = getConnection()) {
-            PreparedStatement ps = c.prepareStatement("select * from `custom_knockback` where uuid=?;");
+            PreparedStatement ps = c.prepareStatement("select * from `" + tableName + "` where uuid=?;");
             ps.setString(1, player.getUniqueId().toString());
             ResultSet rs = ps.executeQuery();
             return rs.first();
@@ -219,20 +254,24 @@ public class MySQLDataSource {
         }
     }
 
-    public void setKnockback(OfflinePlayer player, Vector2d knockbackVector) {
-        boolean alreadyHave = haveKnockback(player);
+    public void setKnockback(OfflinePlayer player, Vector2d knockbackVector, GameType gameType) {
+        boolean alreadyHave = haveKnockback(player, gameType);
         cachedResultMap.remove(player);
+        String tableName = "custom_knockback";
+        if (gameType == GameType.NPC_KNOCKBACK) {
+            tableName += "_npc";
+        }
         try (Connection c = getConnection()) {
             double x = knockbackVector.getX();
             double y = knockbackVector.getY();
             if (alreadyHave) {
-                PreparedStatement updateStatement = c.prepareStatement("update `custom_knockback` set vertical=? , horizontal=? where uuid=?;");
+                PreparedStatement updateStatement = c.prepareStatement("update `" + tableName + "` set vertical=? , horizontal=? where uuid=?;");
                 updateStatement.setDouble(1, y);
                 updateStatement.setDouble(2, x);
                 updateStatement.setString(3, player.getUniqueId().toString());
                 updateStatement.executeUpdate();
             } else {
-                PreparedStatement insertStatement = c.prepareStatement("insert into `custom_knockback` (uuid,vertical,horizontal) values (?,?,?);");
+                PreparedStatement insertStatement = c.prepareStatement("insert into `" + tableName + "` (uuid,vertical,horizontal) values (?,?,?);");
                 insertStatement.setString(1, player.getUniqueId().toString());
                 insertStatement.setDouble(2, y);
                 insertStatement.setDouble(3, x);
@@ -243,20 +282,32 @@ public class MySQLDataSource {
         }
     }
 
-    public Vector2d getKnockback(OfflinePlayer player) {
-        if (cachedResultMap.containsKey(player) && cachedResultMap.get(player).getKnockback() != null) {
-            return cachedResultMap.get(player).getKnockback();
+    public Vector2d getKnockback(OfflinePlayer player, GameType gameType) {
+        if (cachedResultMap.containsKey(player)) {
+            if (gameType == GameType.NPC_KNOCKBACK && cachedResultMap.get(player).getNpcKockback() != null) {
+                return cachedResultMap.get(player).getNpcKockback();
+            } else if (cachedResultMap.get(player).getKnockback() != null) {
+                return cachedResultMap.get(player).getKnockback();
+            }
         }
-        if (!haveKnockback(player)) {
-            setKnockback(player, new Vector2d(0.8997621613275862, 0.46080000519752506));
+        if (!haveKnockback(player, gameType)) {
+            setKnockback(player, new Vector2d(0.8997621613275862, 0.46080000519752506), gameType);
+        }
+        String tableName = "custom_knockback";
+        if (gameType == GameType.NPC_KNOCKBACK) {
+            tableName += "_npc";
         }
         try (Connection c = getConnection()) {
-            PreparedStatement ps = c.prepareStatement("select * from custom_knockback where uuid=?;");
+            PreparedStatement ps = c.prepareStatement("select * from " + tableName + " where uuid=?;");
             ps.setString(1, player.getUniqueId().toString());
             ResultSet rs = ps.executeQuery();
             rs.first();
             Vector2d knockbackVector = new Vector2d(rs.getDouble("horizontal"), rs.getDouble("vertical"));
-            updateCache(player, (result) -> result.setKnockback(knockbackVector));
+            if (gameType == GameType.NPC_KNOCKBACK) {
+                updateCache(player, (result) -> result.setNpcKockback(knockbackVector));
+            } else {
+                updateCache(player, (result) -> result.setKnockback(knockbackVector));
+            }
             return knockbackVector;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -558,7 +609,9 @@ public class MySQLDataSource {
 
     private class CachedPlayerSqlResult {
         private KnockbackDifficulty difficulty;
+        private KnockbackDifficulty npcDifficulty;
         private Vector2d knockback;
+        private Vector2d npcKockback;
         private int timer = -1;
         private int bridgeRecord = -1;
         private int times = -1;
@@ -633,6 +686,22 @@ public class MySQLDataSource {
 
         public int getTimes() {
             return times;
+        }
+
+        public KnockbackDifficulty getNpcDifficulty() {
+            return npcDifficulty;
+        }
+
+        public void setNpcDifficulty(KnockbackDifficulty npcDifficulty) {
+            this.npcDifficulty = npcDifficulty;
+        }
+
+        public Vector2d getNpcKockback() {
+            return npcKockback;
+        }
+
+        public void setNpcKockback(Vector2d npcKockback) {
+            this.npcKockback = npcKockback;
         }
 
         public void setTimes(int times) {

@@ -1,6 +1,7 @@
 package moe.orangemc.clutchgames.command;
 
 import moe.orangemc.clutchgames.ClutchGames;
+import moe.orangemc.clutchgames.game.GameType;
 import moe.orangemc.plugincommons.command.SubCommandBase;
 
 import org.bukkit.ChatColor;
@@ -8,6 +9,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+
+import java.util.Locale;
 
 public class CustomKnockbackCommand implements SubCommandBase {
     @Override
@@ -22,7 +25,7 @@ public class CustomKnockbackCommand implements SubCommandBase {
 
     @Override
     public String getUsage() {
-        return "";
+        return "<游戏类型 npc(NPC自救)|kb(方块自救)>";
     }
 
     @Override
@@ -36,7 +39,19 @@ public class CustomKnockbackCommand implements SubCommandBase {
             sender.sendMessage(ChatColor.RED + "只有管理员才能执行这条命令");
             return true;
         }
-        ClutchGames.getCustomKnockbackSessionManager().createSession((Player) sender);
+        if (args.length != 1) {
+            return false;
+        }
+        switch (args[0].toLowerCase(Locale.ROOT)) {
+            case "kb":
+                ClutchGames.getCustomKnockbackSessionManager().createSession((Player) sender, GameType.KNOCKBACK);
+                break;
+            case "npc":
+                ClutchGames.getCustomKnockbackSessionManager().createSession((Player) sender, GameType.NPC_KNOCKBACK);
+                break;
+            default:
+                return false;
+        }
         return true;
     }
 

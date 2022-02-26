@@ -14,7 +14,7 @@ public class GameMapLoader {
 
     public GameMap load() throws IOException {
         try (DataInputStream dis = new DataInputStream(new GZIPInputStream(new FileInputStream(gameMapFile)))) {
-            MapType mapType = MapType.values()[dis.readInt()];
+            MapType mapType = MapType.values()[dis.readInt() - 1];
             String name = dis.readUTF();
             Material icon = Material.values()[dis.readInt()];
 

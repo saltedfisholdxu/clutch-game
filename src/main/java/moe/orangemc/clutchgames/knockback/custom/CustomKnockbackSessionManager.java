@@ -1,5 +1,7 @@
 package moe.orangemc.clutchgames.knockback.custom;
 
+import moe.orangemc.clutchgames.game.GameType;
+
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -12,10 +14,10 @@ public class CustomKnockbackSessionManager {
         return sessionMap.get(p);
     }
 
-    public void createSession(Player player) {
+    public void createSession(Player player, GameType gameType) {
         CustomKnockbackSetSession session = new CustomKnockbackSetSession();
         sessionMap.put(player, session);
-        session.start(player);
+        session.start(player, gameType);
     }
 
     public void removeSession(Player player) {

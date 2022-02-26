@@ -1,18 +1,21 @@
 package moe.orangemc.clutchgames.knockback.custom;
 
 import moe.orangemc.clutchgames.ClutchGames;
+import moe.orangemc.clutchgames.game.GameType;
 import moe.orangemc.clutchgames.util.Vector2d;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class CustomKnockbackSetSession {
+    private GameType gameType;
     private CustomKnockbackSetStage stage;
 
     private double x;
     private double y;
 
-    public void start(Player player) {
+    public void start(Player player, GameType gameType) {
+        this.gameType = gameType;
         stage = CustomKnockbackSetStage.VERTICAL;
         stage.getExecutor(player).preExecute(this);
     }
@@ -33,5 +36,9 @@ public class CustomKnockbackSetSession {
 
     public Vector2d build() {
         return new Vector2d(x, y);
+    }
+
+    public GameType getGameType() {
+        return gameType;
     }
 }
